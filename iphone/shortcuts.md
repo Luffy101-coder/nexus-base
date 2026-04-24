@@ -28,7 +28,7 @@
 **痛点**：在控制中心（下拉菜单）点击关闭 Wi-Fi 或蓝牙，其实只是“断开当前连接直到明天”，后台依然在耗电搜索。要彻底关闭每次都得去设置里翻找，非常麻烦。
 **解决方案**：使用这个快捷指令，点击一下，彻底关闭硬件开关，省电又省心！
 
-<div style="display: flex; align-items: center; gap: 20px; margin: 20px 0; padding: 20px; background: #f4f5f9; border-radius: 16px;">
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 20px; margin: 20px 0; padding: 20px; background: #f4f5f9; border-radius: 16px;">
   <!-- SVG 切换动画 -->
   <svg width="120" height="60" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
     <style>
@@ -53,7 +53,7 @@
 **痛点**：买单时，有时需要打开微信扫一扫，有时又要打开支付宝出示付款码，手忙脚乱。
 **解决方案**：一键呼出一个菜单，包含“微信扫码、微信付款、支付宝扫码、支付宝付款”，甚至可以将其设置为双击 iPhone 手机背面直接呼出！
 
-<div style="display: flex; align-items: center; gap: 20px; margin: 20px 0; padding: 20px; background: #fcece0; border-radius: 16px;">
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 20px; margin: 20px 0; padding: 20px; background: #fcece0; border-radius: 16px;">
   <!-- SVG 扫码动画 -->
   <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <style>
@@ -86,7 +86,7 @@
 **痛点**：普通截图只是一张长方形的图片，发朋友圈或给客户展示显得不够高级。
 **解决方案**：这个指令会自动识别你的截图型号（如 iPhone 15 Pro 或 iPad），并自动为你**套上一个极其逼真的官方设备外壳**，效果堪比苹果官网宣传图！
 
-<div style="display: flex; align-items: center; gap: 20px; margin: 20px 0; padding: 20px; background: #e8f2fc; border-radius: 16px;">
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 20px; margin: 20px 0; padding: 20px; background: #e8f2fc; border-radius: 16px;">
   <!-- SVG 套壳动画 -->
   <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <style>

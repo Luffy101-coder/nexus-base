@@ -16,6 +16,63 @@
       --search-input-border-color: #0066cc;
     }
     
+    /* 修复移动端（如 iPhone 17 Pro）左下角汉堡菜单按钮太靠下难以注意到的问题 */
+    .sidebar-toggle {
+      background-color: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 50% !important;
+      width: 50px !important;
+      height: 50px !important;
+      bottom: 40px !important;
+      left: 20px !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      animation: pulse-shadow 2s infinite;
+      z-index: 999;
+    }
+    
+    .sidebar-toggle span {
+      background-color: var(--theme-color) !important;
+      margin-bottom: 4px !important;
+    }
+    
+    /* 为按钮增加呼吸灯发光动画，强力吸引用户点击 */
+    @keyframes pulse-shadow {
+      0% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(0, 102, 204, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0); }
+    }
+    
+    /* 提示用户点击的文字浮窗（仅在移动端显示） */
+    @media screen and (max-width: 768px) {
+      .sidebar-toggle::before {
+        content: "展开目录 / 搜索";
+        position: absolute;
+        left: 60px;
+        white-space: nowrap;
+        background: var(--theme-color);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        opacity: 0;
+        animation: show-hint 4s forwards;
+        animation-delay: 2s; /* 延迟2秒出现 */
+        pointer-events: none;
+      }
+      
+      /* 小提示出现几秒后消失，避免遮挡内容 */
+      @keyframes show-hint {
+        0%, 100% { opacity: 0; transform: translateX(-10px); }
+        10%, 90% { opacity: 1; transform: translateX(0); }
+      }
+    }
+    
     .sidebar-nav li>a { font-weight: 500; }
     .sidebar-nav > ul > li > a { font-weight: 700; color: #1d1d1f; }
     

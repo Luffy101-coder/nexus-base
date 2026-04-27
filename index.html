@@ -90,6 +90,12 @@
     .markdown-section h2 { border-bottom: none; font-weight: 700; color: #1d1d1f; }
     .markdown-section code { background: #f0f0f5; color: #d93b3b; }
     .markdown-section pre>code { color: #d4d4d4; }
+    
+    /* 【新增】强制覆盖 Docsify 默认内容区最大宽度，让 AppleWeb 卡片布局能在大屏上铺开 */
+    .markdown-section {
+      max-width: 1200px !important;
+      padding: 30px 15px 40px 15px !important;
+    }
   </style>
 </head>
 <body>
@@ -99,8 +105,9 @@
     window.$docsify = {
       name: ' Nexus', // 酷炫的名字
       repo: '',
-      loadSidebar: true, // 加载侧边栏 _sidebar.md
-      subMaxLevel: 2,    // 侧边栏层级
+      loadSidebar: false, // 【关闭】加载左侧边栏，启用全屏沉浸式卡片布局
+      hideSidebar: true,  // 【隐藏】自带的侧边栏组件
+      subMaxLevel: 2,    
       auto2top: true,    // 切换页面自动回到顶部
       
       // 全局搜索插件配置

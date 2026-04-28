@@ -1,144 +1,542 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title> Nexus | 我的专属知识中枢</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <!-- 引入 vue 主题，自带好看的侧边栏和响应式 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-  <style>
-    /* 自定义一些酷炫的苹果风色彩 */
-    :root {
-      --theme-color: #0066cc;
-      --sidebar-background: #f4f5f9;
-      --sidebar-nav-link-color--active: #0066cc;
-      --search-input-border-color: #0066cc;
-    }
-    
-    /* 修复移动端（如 iPhone 17 Pro）左下角汉堡菜单按钮太靠下难以注意到的问题 */
-    .sidebar-toggle {
-      background-color: rgba(255, 255, 255, 0.9) !important;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 50% !important;
-      width: 50px !important;
-      height: 50px !important;
-      bottom: 40px !important;
-      left: 20px !important;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      animation: pulse-shadow 2s infinite;
-      z-index: 999;
-    }
-    
-    .sidebar-toggle span {
-      background-color: var(--theme-color) !important;
-      margin-bottom: 4px !important;
-    }
-    
-    /* 为按钮增加呼吸灯发光动画，强力吸引用户点击 */
-    @keyframes pulse-shadow {
-      0% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(0, 102, 204, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0); }
-    }
-    
-    /* 提示用户点击的文字浮窗（仅在移动端显示） */
-    @media screen and (max-width: 768px) {
-      .sidebar-toggle::before {
-        content: "展开目录 / 搜索";
-        position: absolute;
-        left: 60px;
-        white-space: nowrap;
-        background: var(--theme-color);
-        color: white;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-        opacity: 0;
-        animation: show-hint 4s forwards;
-        animation-delay: 2s; /* 延迟2秒出现 */
-        pointer-events: none;
-      }
-      
-      /* 小提示出现几秒后消失，避免遮挡内容 */
-      @keyframes show-hint {
-        0%, 100% { opacity: 0; transform: translateX(-10px); }
-        10%, 90% { opacity: 1; transform: translateX(0); }
-      }
-    }
-    
-    .sidebar-nav li>a { font-weight: 500; }
-    .sidebar-nav > ul > li > a { font-weight: 700; color: #1d1d1f; }
-    
-    /* 让名称带有渐变色彩 */
-    .app-name { 
-      font-size: 24px !important;
-      font-weight: 800;
-      background: linear-gradient(135deg, #0066cc, #00aaff, #8e44ad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 20px;
-    }
-    
-    .markdown-section h1 { letter-spacing: -1px; font-weight: 800; }
-    .markdown-section h2 { border-bottom: none; font-weight: 700; color: #1d1d1f; }
-    .markdown-section code { background: #f0f0f5; color: #d93b3b; }
-    .markdown-section pre>code { color: #d4d4d4; }
-    
-    /* 【新增】强制覆盖 Docsify 默认内容区最大宽度，让 AppleWeb 卡片布局能在大屏上铺开 */
-    .markdown-section {
-      max-width: 1200px !important;
-      padding: 30px 15px 40px 15px !important;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Nexus - Isabel 的数字中枢</title>
+    <style>
+        :root {
+            /* 浅色模式基础背景 */
+            --bg-base: #fbfbfd;
+            
+            /* 全局字体颜色 */
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            
+            /* 毛玻璃导航栏 */
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-blur: saturate(180%) blur(20px);
+            
+            /* 阴影 */
+            --border-subtle: rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.03);
+            --shadow-card-hover: 0 12px 32px rgba(0, 0, 0, 0.06);
+            
+            /* 字体与排版 */
+            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, sans-serif;
+            
+            /* 动效 */
+            --motion-spring: cubic-bezier(0.16, 1, 0.3, 1);
+            --motion-duration: 0.4s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.47059;
+            letter-spacing: -0.022em;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 顶部导航 */
+        .glass-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-back {
+            font-size: 14px;
+            color: #0071e3;
+            text-decoration: none;
+            display: none; 
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .nav-back:hover { text-decoration: underline; }
+
+        /* 核心布局 */
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 24px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .view-hidden {
+            display: none !important;
+        }
+
+        /* Hero 区域 */
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: staggerIn 0.8s var(--motion-spring) forwards;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            line-height: 1.05;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #1d1d1f 0%, #434344 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: -0.005em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 区域标题 */
+        .section-header {
+            font-size: 32px;
+            font-weight: 600;
+            margin: 80px 0 32px 0;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-subtle), transparent);
+            margin-left: 16px;
+        }
+
+        /* 卡片网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* 🍎 极度柔和的糖果色卡片 (Pastel/Minty 色系) */
+        .apple-card {
+            border-radius: 24px;
+            padding: 32px;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0, 0, 0, 0.02); /* 边框更加无形 */
+            transition: transform var(--motion-duration) var(--motion-spring), 
+                        box-shadow var(--motion-duration) var(--motion-spring);
+            
+            opacity: 0;
+            transform: translateY(30px);
+            animation: staggerIn 0.8s var(--motion-spring) forwards;
+        }
+
+        /* 各个卡片的独立超淡渐变背景 */
+        .card-mac-spotlight { background: linear-gradient(135deg, #e5f1ff 0%, #f0f8ff 100%); } /* 淡冰蓝 */
+        .card-mac-cleanup { background: linear-gradient(135deg, #f5ebff 0%, #faf3ff 100%); } /* 淡紫藤 */
+        .card-mac-password { background: linear-gradient(135deg, #ffebe9 0%, #fff4f2 100%); } /* 婴儿粉 */
+        
+        .card-iphone-shortcuts { background: linear-gradient(135deg, #e9f9eb 0%, #f2fcf3 100%); } /* 薄荷绿 */
+        .card-iphone-battery { background: linear-gradient(135deg, #fff4e5 0%, #fff9f0 100%); } /* 淡鹅黄 */
+        .card-iphone-charging { background: linear-gradient(135deg, #efefff 0%, #f5f5ff 100%); } /* 薰衣草蓝 */
+        
+        .card-faq-wifi { background: linear-gradient(135deg, #ffeeee 0%, #fff5f5 100%); } /* 淡珊瑚红 */
+
+        /* 动画延迟 */
+        .card-grid .apple-card:nth-child(1) { animation-delay: 0.05s; }
+        .card-grid .apple-card:nth-child(2) { animation-delay: 0.10s; }
+        .card-grid .apple-card:nth-child(3) { animation-delay: 0.15s; }
+
+        .apple-card:hover {
+            transform: scale(1.02) translateY(-4px);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        /* 🌟 重新设计的图标容器：半透明磨砂玻璃材质 + 悬浮动效 */
+        .card-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            
+            /* 毛玻璃效果：底色透明白 + 高强度模糊 + 微反光描边 */
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            
+            transition: transform 0.4s var(--motion-spring), box-shadow 0.4s var(--motion-spring);
+        }
+
+        /* 悬停时的悬浮倾斜与阴影放大 */
+        .apple-card:hover .card-icon-wrapper {
+            transform: scale(1.15) translateY(-4px) rotate(-5deg);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08), inset 0 2px 4px rgba(255,255,255,1);
+        }
+
+        /* 为不同卡片的图标设置对应的柔和强调色 */
+        .card-mac-spotlight .card-icon { color: #0071e3; }
+        .card-mac-cleanup .card-icon { color: #af52de; }
+        .card-mac-password .card-icon { color: #ff2d55; }
+        .card-iphone-shortcuts .card-icon { color: #34c759; }
+        .card-iphone-battery .card-icon { color: #ff9f0a; }
+        .card-iphone-charging .card-icon { color: #5e5ce6; }
+        .card-faq-wifi .card-icon { color: #ff3b30; }
+
+        .card-icon {
+            width: 28px;
+            height: 28px;
+            /* 给图标增加一点厚度，让它在毛玻璃上不发飘 */
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+            transition: transform 0.4s var(--motion-spring);
+        }
+
+        /* 内部文本 */
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .card-desc {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #5c5c5f;
+        }
+
+        /* ================= 文章详情页样式 (保持浅色黑字) ================= */
+        #article-view {
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 60px 24px 120px;
+        }
+        
+        .article-header {
+            margin-bottom: 48px;
+            text-align: center;
+        }
+
+        .article-tag {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0071e3;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .article-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .article-meta {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .article-body {
+            font-size: 19px;
+            line-height: 1.6;
+            color: #333336;
+        }
+
+        .article-body p { margin-bottom: 24px; }
+        .article-body h3 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 48px 0 16px;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .article-hero-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #e5f1ff, #f0f8ff);
+            border-radius: 20px;
+            margin: 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0071e3;
+            font-weight: 600;
+            font-size: 24px;
+            box-shadow: var(--shadow-card);
+        }
+
+        @keyframes staggerIn {
+            from { opacity: 0; transform: translateY(30px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        /* 移动端响应式 */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 42px; }
+            .hero-subtitle { font-size: 20px; }
+            .section-header { font-size: 24px; margin-top: 60px; }
+            
+            .apple-card {
+                flex-direction: row;
+                align-items: center;
+                padding: 24px;
+                border-radius: 20px;
+            }
+
+            .card-icon-wrapper {
+                margin-bottom: 0;
+                margin-right: 20px;
+                flex-shrink: 0;
+            }
+
+            .card-title {
+                font-size: 20px;
+                margin-bottom: 4px;
+            }
+            
+            .card-desc { font-size: 14px; }
+            .article-title { font-size: 36px; }
+            .article-body { font-size: 17px; }
+        }
+    </style>
 </head>
 <body>
-  <div id="app">正在启动 Nexus 知识引擎...</div>
-  
-  <script>
-    window.$docsify = {
-      name: ' Nexus', // 酷炫的名字
-      repo: '',
-      loadSidebar: false, // 【关闭】加载左侧边栏，启用全屏沉浸式卡片布局
-      hideSidebar: true,  // 【隐藏】自带的侧边栏组件
-      subMaxLevel: 2,    
-      auto2top: true,    // 切换页面自动回到顶部
-      
-      // 全局搜索插件配置
-      search: {
-        maxAge: 86400000, 
-        paths: 'auto',
-        placeholder: '🔍 搜索问题、方案或设备... (支持模糊匹配)',
-        noData: '🤔 暂未找到相关记录，请尝试其他关键词',
-        depth: 6,
-        hideOtherSidebarContent: false,
-        namespace: 'nexus-kb',
-      },
-      
-      // 拷贝代码插件配置
-      copyCode: {
-        buttonText : '复制代码',
-        errorText  : '复制失败',
-        successText: '复制成功!'
-      }
-    }
-  </script>
-  
-  <!-- Docsify 核心脚本 -->
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
-  <!-- 全文搜索插件 -->
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
-  <!-- 图片缩放插件 -->
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
-  <!-- 代码一键复制插件 -->
-  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
-  <!-- Emoji 解析插件 -->
-  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+
+    <nav class="glass-nav">
+        <a href="#/" class="nav-brand"> Nexus</a>
+        <a href="#/" class="nav-back" id="nav-back">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            返回概览
+        </a>
+    </nav>
+
+    <!-- 视图 1：主页网格 -->
+    <main id="home-view">
+        <div class="hero">
+            <h1 class="hero-title">Nexus 中枢</h1>
+            <p class="hero-subtitle">欢迎来到 Isabel 的数字中枢。<br>探索、解决并精通你的每一台 Apple 设备。</p>
+        </div>
+
+        <h2 class="section-header">Mac 核心库</h2>
+        <div class="card-grid">
+            <a href="#/mac/spotlight" class="apple-card card-mac-spotlight">
+                <div class="card-icon-wrapper">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">Spotlight<br>高级用法</div>
+                    <div class="card-desc">掌握 macOS 搜索效率的终极指南</div>
+                </div>
+            </a>
+
+            <a href="#/mac/cleanup" class="apple-card card-mac-cleanup">
+                <div class="card-icon-wrapper">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <path d="M14 11a2 2 0 0 0-2-2"></path>
+                        <path d="M12 11v8"></path>
+                        <path d="M12 19h4"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">清理<br>“系统数据”</div>
+                    <div class="card-desc">Apple 官方存储优化方案</div>
+                </div>
+            </a>
+
+            <a href="#/mac/reset-password" class="apple-card card-mac-password">
+                <div class="card-icon-wrapper">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">密码遗失<br>无损恢复</div>
+                    <div class="card-desc">安全重置 Mac 密码且不丢数据</div>
+                </div>
+            </a>
+        </div>
+
+        <h2 class="section-header">iPhone 中枢</h2>
+        <div class="card-grid">
+            <a href="#/iphone/shortcuts" class="apple-card card-iphone-shortcuts">
+                <div class="card-icon-wrapper">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 12l10 10 10-10L12 2z"></path>
+                        <path d="M2 12h20"></path>
+                        <path d="M12 2v20"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">Top 3<br>快捷指令</div>
+                    <div class="card-desc">一键断联、万能扫码与屏幕朗读</div>
+                </div>
+            </a>
+
+            <a href="#/iphone/battery" class="apple-card card-iphone-battery">
+                <div class="card-icon-wrapper">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="6" width="18" height="12" rx="2" ry="2"></rect>
+                        <line x1="23" y1="13" x2="23" y2="11"></line>
+                        <line x1="5" y1="12" x2="15" y2="12"></line>
+                        <line x1="10" y1="7" x2="10" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">电池健康<br>保养指南</div>
+                    <div class="card-desc">破解玄学，遵循官方充电建议</div>
+                </div>
+            </a>
+
+            <a href="#/iphone/slow-charging" class="apple-card card-iphone-charging">
+                <div class="card-icon-wrapper">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">慢速充电<br>警报解析</div>
+                    <div class="card-desc">为什么 iOS 会出现橙色电池？</div>
+                </div>
+            </a>
+        </div>
+
+        <h2 class="section-header">排障工具箱 (FAQ)</h2>
+        <div class="card-grid">
+            <a href="#/faq/wifi" class="apple-card card-faq-wifi">
+                <div class="card-icon-wrapper">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">Wi-Fi<br>频繁断开</div>
+                    <div class="card-desc">解决 Mac 路由器连接不稳定的排障步骤</div>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <!-- 视图 2：文章详情页 -->
+    <main id="article-view" class="view-hidden">
+        <article class="apple-article">
+            <header class="article-header">
+                <span class="article-tag">Mac 核心库</span>
+                <h1 class="article-title">Spotlight 高级用法</h1>
+                <p class="article-meta">掌握 macOS 搜索效率的终极指南 · 预计阅读 3 分钟</p>
+            </header>
+            
+            <div class="article-hero-image">
+                [ ⌘ + Space 演示图 ]
+            </div>
+
+            <div class="article-body">
+                <p>许多 Mac 用户只用 Spotlight（聚焦搜索）来打开应用程序，但实际上，它是一个极其强大的系统级生产力工具。</p>
+                
+                <h3>1. 自然语言搜索</h3>
+                <p>不需要记住确切的文件名。试着输入“上周我创建的 PDF” 或者 “来自 Isabel 的发票邮件”。Spotlight 能够理解自然语言，并在一秒钟内过滤出结果。</p>
+
+                <h3>2. 快速计算与单位换算</h3>
+                <p>不需要打开计算器。直接在 Spotlight 输入 <code>(1024 * 0.15) + 30</code>，或者 <code>100 USD to CNY</code>，它会立刻给出答案。输入 <code>20 miles</code> 也能直接换算成公里。</p>
+            </div>
+        </article>
+    </main>
+
+    <script>
+        const homeView = document.getElementById('home-view');
+        const articleView = document.getElementById('article-view');
+        const navBack = document.getElementById('nav-back');
+
+        function handleRoute() {
+            const hash = window.location.hash;
+            if (!hash || hash === '#/') {
+                homeView.classList.remove('view-hidden');
+                articleView.classList.add('view-hidden');
+                navBack.style.display = 'none';
+                window.scrollTo(0, 0);
+            } else {
+                homeView.classList.add('view-hidden');
+                articleView.classList.remove('view-hidden');
+                navBack.style.display = 'flex';
+                window.scrollTo(0, 0);
+            }
+        }
+        window.addEventListener('hashchange', handleRoute);
+        handleRoute();
+    </script>
 </body>
 </html>
